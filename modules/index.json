@@ -1,0 +1,94 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-01-11T21:25:52.133796",
+  "total_count": 3,
+  "modules": [
+    {
+      "id": "user.custom.hello",
+      "name": "Hello World 模块",
+      "description": "弹出一个 Toast",
+      "author": "ChaoMixian",
+      "version": "1.0.0",
+      "category": "用户脚本",
+      "homepage": "",
+      "permissions": [
+        "android.permission.POST_NOTIFICATIONS"
+      ],
+      "inputs": [
+        {
+          "id": "msg",
+          "name": "消息内容",
+          "type": "string",
+          "defaultValue": "Hello from Lua!"
+        }
+      ],
+      "outputs": [],
+      "filename": "user.custom.hello.zip",
+      "download_url": "https://raw.githubusercontent.com/ChaoMixian/vFlow-Repos/main/modules/user.custom.hello.zip",
+      "local_path": "modules/user.custom.hello.zip"
+    },
+    {
+      "id": "user.custom.open_apple_music",
+      "name": "打开 Apple Music",
+      "description": "通过 Shizuku 执行 Shell 命令启动 Apple Music 应用。",
+      "author": "ChaoMixian",
+      "version": "1.0.0",
+      "category": "用户脚本",
+      "homepage": "",
+      "permissions": [
+        "vflow.permission.SHIZUKU"
+      ],
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "result",
+          "name": "执行结果",
+          "type": "text"
+        }
+      ],
+      "filename": "user.custom.open_apple_music.zip",
+      "download_url": "https://raw.githubusercontent.com/ChaoMixian/vFlow-Repos/main/modules/user.custom.open_apple_music.zip",
+      "local_path": "modules/user.custom.open_apple_music.zip"
+    },
+    {
+      "id": "vflow.user.nfc_root_control",
+      "name": "NFC 开关 (Root)",
+      "description": "使用 Root 权限执行 svc 命令来开启或关闭 NFC 功能。",
+      "author": "ChaoMixian",
+      "version": "1.0",
+      "category": "用户脚本",
+      "homepage": "",
+      "permissions": [
+        "vflow.permission.ROOT"
+      ],
+      "inputs": [
+        {
+          "id": "state",
+          "name": "操作类型",
+          "type": "enum",
+          "defaultValue": "开启",
+          "options": [
+            "开启",
+            "关闭"
+          ],
+          "magic_variable": true
+        }
+      ],
+      "outputs": [
+        {
+          "id": "shell_output",
+          "name": "命令输出",
+          "type": "text"
+        },
+        {
+          "id": "success",
+          "name": "是否执行",
+          "type": "boolean"
+        }
+      ],
+      "filename": "vflow.user.nfc_root_control.zip",
+      "download_url": "https://raw.githubusercontent.com/ChaoMixian/vFlow-Repos/main/modules/vflow.user.nfc_root_control.zip",
+      "local_path": "modules/vflow.user.nfc_root_control.zip"
+    }
+  ]
+}

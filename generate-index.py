@@ -1,20 +1,28 @@
 #!/usr/bin/env python3
 """
-vFlow工作流仓库索引生成器
-自动扫描workflows目录并生成index.json
+vFlow仓库索引生成器
+自动扫描workflows和modules目录并生成index.json
 """
 
 import json
 import os
 import sys
+import zipfile
 from datetime import datetime
 from pathlib import Path
 
 
-def normalize_id(filename):
-    """从文件名获取ID（去除.json扩展名）"""
+def normalize_workflow_id(filename):
+    """从文件名获取工作流ID（去除.json扩展名）"""
     return filename.replace('.json', '') if filename.endswith('.json') else filename
 
+
+def normalize_module_id(filename):
+    """从文件名获取模块ID（去除.zip扩展名）"""
+    return filename.replace('.zip', '') if filename.endswith('.zip') else filename
+
+
+# ==================== 工作流相关函数 ====================
 
 def validate_workflow(data, filename):
     """
@@ -35,15 +43,11 @@ def validate_workflow(data, filename):
         return False, f"_meta缺少必需字段: {', '.join(missing_fields)}", None
 
     # 验证_meta中的ID与文件名一致
-    expected_id = normalize_id(filename)
+    expected_id = normalize_workflow_id(filename)
     meta_id = meta['id']
 
     if meta_id != expected_id:
         return False, f"_meta.id 不匹配: 文件名='{expected_id}', _meta.id='{meta_id}'", None
-
-    # 检查工作流是否有关键字段（可选，为了兼容性）
-    # if 'id' not in data or 'steps' not in data:
-    #     return False, "工作流缺少 'id' 或 'steps' 字段", None
 
     return True, None, data
 
@@ -64,7 +68,7 @@ def clean_workflow_for_repo(data):
     return cleaned
 
 
-def scan_directory(directory_path):
+def scan_workflows_directory(directory_path):
     """
     扫描目录中的所有工作流JSON文件
     返回: (valid_items, errors, skipped_files)
@@ -76,7 +80,7 @@ def scan_directory(directory_path):
     dir_path = Path(directory_path)
 
     if not dir_path.exists():
-        print(f"❌ 错误: 目录不存在: {directory_path}")
+        print(f"⚠️  工作流目录不存在: {directory_path}")
         return items, errors, skipped_files
 
     # 遍历目录中的所有JSON文件
@@ -105,7 +109,7 @@ def scan_directory(directory_path):
 
             # 构建索引条目
             item = {
-                'id': meta.get('id', normalize_id(filepath.name)),
+                'id': meta.get('id', normalize_workflow_id(filepath.name)),
                 'name': meta.get('name', '未命名'),
                 'description': meta.get('description', ''),
                 'author': meta.get('author', '未知'),
@@ -139,13 +143,126 @@ def scan_directory(directory_path):
     return items, errors, skipped_files
 
 
-def generate_index(directory='workflows', output_file='index.json'):
-    """生成索引文件"""
-    print(f"🔍 扫描目录: {directory}")
+# ==================== 模块相关函数 ====================
+
+def validate_module(manifest, filename):
+    """
+    验证模块manifest数据
+    返回: (is_valid, error_message)
+    """
+    # 验证必需字段
+    required_fields = ['id', 'name', 'description', 'author', 'version', 'category']
+    missing_fields = [field for field in required_fields if field not in manifest]
+
+    if missing_fields:
+        return False, f"manifest缺少必需字段: {', '.join(missing_fields)}"
+
+    # 验证ID与文件名一致
+    expected_id = normalize_module_id(filename)
+    manifest_id = manifest['id']
+
+    if manifest_id != expected_id:
+        return False, f"manifest.id 不匹配: 文件名='{expected_id}', manifest.id='{manifest_id}'"
+
+    return True, None
+
+
+def scan_modules_directory(directory_path):
+    """
+    扫描目录中的所有模块ZIP文件
+    返回: (valid_items, errors, skipped_files)
+    """
+    items = []
+    errors = []
+    skipped_files = []
+
+    dir_path = Path(directory_path)
+
+    if not dir_path.exists():
+        print(f"⚠️  模块目录不存在: {directory_path}")
+        return items, errors, skipped_files
+
+    # 遍历目录中的所有ZIP文件
+    for filepath in dir_path.glob('*.zip'):
+        # 跳过index.json
+        if filepath.name == 'index.json':
+            continue
+
+        try:
+            # 打开ZIP文件
+            with zipfile.ZipFile(filepath, 'r') as zip_file:
+                # 查找manifest.json（可能在根目录或子目录中）
+                manifest_file = None
+                manifest_path = None
+
+                for file_in_zip in zip_file.namelist():
+                    if file_in_zip.endswith('manifest.json'):
+                        manifest_file = file_in_zip
+                        manifest_path = file_in_zip
+                        break
+
+                if manifest_file is None:
+                    errors.append(f"❌ {filepath.name}: ZIP中未找到manifest.json")
+                    skipped_files.append(filepath.name)
+                    continue
+
+                # 读取并解析manifest.json
+                with zip_file.open(manifest_file) as manifest_json:
+                    manifest = json.load(manifest_json)
+
+                # 验证manifest
+                is_valid, error_msg = validate_module(manifest, filepath.name)
+
+                if not is_valid:
+                    errors.append(f"❌ {filepath.name}: {error_msg}")
+                    skipped_files.append(filepath.name)
+                    continue
+
+                # 构建索引条目
+                item = {
+                    'id': manifest.get('id', normalize_module_id(filepath.name)),
+                    'name': manifest.get('name', '未命名'),
+                    'description': manifest.get('description', ''),
+                    'author': manifest.get('author', '未知'),
+                    'version': manifest.get('version', '1.0.0'),
+                    'category': manifest.get('category', '用户脚本'),
+                    'homepage': manifest.get('homepage', ''),
+                    'permissions': manifest.get('permissions', []),
+                    'inputs': manifest.get('inputs', []),
+                    'outputs': manifest.get('outputs', []),
+                    'filename': filepath.name,
+                    # 构建下载URL
+                    'download_url': f"https://raw.githubusercontent.com/ChaoMixian/vFlow-Repos/main/modules/{filepath.name}",
+                    # 本地文件路径（用于脚本更新文件）
+                    'local_path': str(filepath)
+                }
+
+                items.append(item)
+
+                print(f"✅ {filepath.name}: {item['name']} (v{item['version']}, {item['category']})")
+
+        except zipfile.BadZipFile:
+            errors.append(f"❌ {filepath.name}: 无效的ZIP文件")
+            skipped_files.append(filepath.name)
+        except json.JSONDecodeError as e:
+            errors.append(f"❌ {filepath.name}: manifest.json解析错误 - {str(e)}")
+            skipped_files.append(filepath.name)
+        except Exception as e:
+            errors.append(f"❌ {filepath.name}: {str(e)}")
+            skipped_files.append(filepath.name)
+
+    return items, errors, skipped_files
+
+
+# ==================== 主函数 ====================
+
+def generate_index(directory, item_type, scan_func, output_file='index.json'):
+    """生成索引文件的通用函数"""
+    print(f"🔍 扫描{item_type}目录: {directory}")
     print("=" * 60)
 
-    # 扫描工作流
-    items, errors, skipped_files = scan_directory(directory)
+    # 扫描文件
+    items, errors, skipped_files = scan_func(directory)
 
     # 打印错误和跳过的文件
     if errors:
@@ -164,7 +281,7 @@ def generate_index(directory='workflows', output_file='index.json'):
         'version': '1.0',
         'last_updated': datetime.now().isoformat(),
         'total_count': len(items),
-        'workflows': items
+        f'{item_type}': items
     }
 
     # 写入索引文件
@@ -173,26 +290,40 @@ def generate_index(directory='workflows', output_file='index.json'):
         json.dump(index, f, ensure_ascii=False, indent=2)
 
     print("\n" + "=" * 60)
-    print(f"✅ 成功索引 {len(items)} 个工作流")
+    print(f"✅ 成功索引 {len(items)} 个{item_type}")
     print(f"📝 索引文件: {output_path}")
     print(f"🕐 更新时间: {index['last_updated']}")
 
-    # 如果有错误，返回非零退出码
-    if errors:
-        print(f"\n⚠️  存在 {len(errors)} 个错误，请检查！")
-        sys.exit(1)
+    return len(errors) == 0
 
 
 def main():
     """主函数"""
-    # 默认扫描workflows目录
-    workflows_dir = 'workflows'
+    print("🚀 vFlow 仓库索引生成器")
+    print("=" * 60)
 
-    # 如果提供了命令行参数，使用指定的目录
+    success = True
+
+    # 生成工作流索引
+    workflows_dir = 'workflows'
     if len(sys.argv) > 1:
         workflows_dir = sys.argv[1]
 
-    generate_index(workflows_dir)
+    if not generate_index(workflows_dir, 'workflows', scan_workflows_directory):
+        success = False
+
+    print("\n")
+
+    # 生成模块索引
+    modules_dir = 'modules'
+    if len(sys.argv) > 2:
+        modules_dir = sys.argv[2]
+
+    if not generate_index(modules_dir, 'modules', scan_modules_directory):
+        success = False
+
+    # 返回退出码
+    sys.exit(0 if success else 1)
 
 
 if __name__ == '__main__':
