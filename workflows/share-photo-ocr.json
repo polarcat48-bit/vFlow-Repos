@@ -1,59 +1,59 @@
 {
-    "_meta": {
-        "id": "share-photo-ocr",
-        "name": "分享图片OCR",
-        "version": "1.0.0",
-        "vFlowLevel": 1,
-        "description": "当通过分享功能接收到图片时，自动对图片中的文字进行OCR识别，并将识别结果展示出来。",
-        "author": "ChaoMixian",
-        "homepage": "https://github.com/ChaoMixian",
-        "tags": [
-            "OCR"
-        ],
-        "updated_at": "2026-01-13"
-    },
-    "id": "3d788d72-f50f-4ce5-9a8a-9d6818906622",
-    "isEnabled": true,
-    "isFavorite": false,
+  "_meta": {
+    "id": "share-photo-ocr",
     "name": "分享图片OCR",
-    "steps": [
-        {
-            "id": "473c8b47-7ff8-41cf-bbde-1e06fee77da3",
-            "indentationLevel": 0,
-            "moduleId": "vflow.trigger.share",
-            "parameters": {
-                "acceptedType": "图片",
-                "__error_policy": "STOP"
-            }
-        },
-        {
-            "id": "2a514b98-46d9-43ba-8d48-ca332417d8db",
-            "indentationLevel": 0,
-            "moduleId": "vflow.interaction.ocr",
-            "parameters": {
-                "mode": "识别全文",
-                "target_text": "",
-                "language": "中文",
-                "search_strategy": "默认 (从上到下)",
-                "show_advanced": true,
-                "image": "{{473c8b47-7ff8-41cf-bbde-1e06fee77da3.shared_content}}",
-                "__error_policy": "STOP"
-            }
-        },
-        {
-            "id": "f0f482c5-bd3e-46c4-afb3-1469c3a9b89d",
-            "indentationLevel": 0,
-            "moduleId": "vflow.data.quick_view",
-            "parameters": {
-                "content": "{{2a514b98-46d9-43ba-8d48-ca332417d8db.full_text}}",
-                "__error_policy": "STOP"
-            }
-        }
+    "version": "1.0.0",
+    "vFlowLevel": 1,
+    "description": "当通过分享功能接收到图片时，自动对图片中的文字进行OCR识别，并将识别结果展示出来。",
+    "author": "ChaoMixian",
+    "homepage": "https://github.com/ChaoMixian",
+    "tags": [
+      "OCR"
     ],
-    "triggerConfig": {
+    "updated_at": "2026-01-13"
+  },
+  "id": "3d788d72-f50f-4ce5-9a8a-9d6818906622",
+  "isEnabled": false,
+  "isFavorite": false,
+  "name": "分享图片OCR",
+  "steps": [
+    {
+      "id": "473c8b47-7ff8-41cf-bbde-1e06fee77da3",
+      "indentationLevel": 0,
+      "moduleId": "vflow.trigger.share",
+      "parameters": {
         "acceptedType": "图片",
-        "__error_policy": "STOP",
-        "type": "vflow.trigger.share"
+        "__error_policy": "STOP"
+      }
     },
-    "wasEnabledBeforePermissionsLost": false
+    {
+      "id": "2a514b98-46d9-43ba-8d48-ca332417d8db",
+      "indentationLevel": 0,
+      "moduleId": "vflow.interaction.ocr",
+      "parameters": {
+        "mode": "识别全文",
+        "target_text": "",
+        "language": "中文",
+        "search_strategy": "默认 (从上到下)",
+        "show_advanced": true,
+        "image": "{{473c8b47-7ff8-41cf-bbde-1e06fee77da3.shared_content}}",
+        "__error_policy": "STOP"
+      }
+    },
+    {
+      "id": "f0f482c5-bd3e-46c4-afb3-1469c3a9b89d",
+      "indentationLevel": 0,
+      "moduleId": "vflow.data.quick_view",
+      "parameters": {
+        "content": "{{2a514b98-46d9-43ba-8d48-ca332417d8db.full_text}}",
+        "__error_policy": "STOP"
+      }
+    }
+  ],
+  "triggerConfig": {
+    "acceptedType": "图片",
+    "__error_policy": "STOP",
+    "type": "vflow.trigger.share"
+  },
+  "wasEnabledBeforePermissionsLost": false
 }
