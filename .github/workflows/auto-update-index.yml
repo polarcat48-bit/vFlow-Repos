@@ -1,0 +1,53 @@
+name: Auto Update Index
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'workflows/*.json'
+      - 'modules/*.zip'
+      - 'generate-index.py'
+  workflow_dispatch:
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run generate-index.py
+        run: |
+          python generate-index.py
+
+      - name: Check for changes
+        id: verify_changes
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Changes detected in index files"
+            git status --short
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No changes detected"
+          fi
+
+      - name: Commit and push changes
+        if: steps.verify_changes.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add workflows/index.json modules/index.json
+          git commit -m "chore: auto-update index files [skip ci]"
+          git push
