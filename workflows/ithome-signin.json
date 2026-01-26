@@ -1,0 +1,85 @@
+{
+  "_meta": {
+    "id": "ithome-signin",
+    "name": "IT签到之家",
+    "version": "1.0.0",
+    "vFlowLevel": 1,
+    "description": "IT之家一键签到",
+    "author": "ChaoMixian",
+    "homepage": "https://github.com/ChaoMixian",
+    "tags": [
+      "IT之家",
+      "签到"
+    ],
+    "updated_at": "2026-01-26"
+  },
+  "id": "0c87cb34-dce4-4c4a-9ffd-665d94a26530",
+  "isEnabled": false,
+  "isFavorite": false,
+  "name": "IT签到之家",
+  "steps": [
+    {
+      "id": "54858005-689e-4a16-9ff2-a1e970846da6",
+      "indentationLevel": 0,
+      "moduleId": "vflow.trigger.manual",
+      "parameters": {}
+    },
+    {
+      "id": "ec838024-f6c1-4f12-9461-4ced0e84e160",
+      "indentationLevel": 0,
+      "moduleId": "vflow.system.close_app",
+      "parameters": {
+        "packageName": "com.ruanmei.ithome",
+        "activityName": "LAUNCH",
+        "__error_policy": "STOP"
+      }
+    },
+    {
+      "id": "293f31f5-843f-4c11-a984-0db7eddbb5b8",
+      "indentationLevel": 0,
+      "moduleId": "vflow.system.launch_app",
+      "parameters": {
+        "packageName": "com.ruanmei.ithome",
+        "activityName": "LAUNCH",
+        "__error_policy": "STOP"
+      }
+    },
+    {
+      "id": "b265557f-8707-4b71-8483-a9f476bde93b",
+      "indentationLevel": 0,
+      "moduleId": "vflow.device.delay",
+      "parameters": {
+        "duration": 900.0,
+        "__error_policy": "STOP"
+      }
+    },
+    {
+      "id": "3014c65a-b349-4e42-9144-0e2e14d2b1f5",
+      "indentationLevel": 0,
+      "moduleId": "vflow.device.click",
+      "parameters": {
+        "target": "com.ruanmei.ithome:id/bottom_me",
+        "__error_policy": "STOP"
+      }
+    },
+    {
+      "id": "6ff4cf21-cd7e-45d1-aa33-4872b7836fe7",
+      "indentationLevel": 0,
+      "moduleId": "vflow.device.delay",
+      "parameters": {
+        "duration": 900.0,
+        "__error_policy": "STOP"
+      }
+    },
+    {
+      "id": "bc465c8c-ee0e-4cde-b9ba-2efb723c5d04",
+      "indentationLevel": 0,
+      "moduleId": "vflow.device.click",
+      "parameters": {
+        "target": "com.ruanmei.ithome:id/ll_me_checkIn",
+        "__error_policy": "STOP"
+      }
+    }
+  ],
+  "wasEnabledBeforePermissionsLost": false
+}

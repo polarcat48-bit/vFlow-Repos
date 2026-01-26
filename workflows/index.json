@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "last_updated": "2026-01-12T18:49:27.892542",
-  "total_count": 2,
+  "last_updated": "2026-01-26T23:18:01.609523",
+  "total_count": 3,
   "workflows": [
     {
       "id": "hello-vflow",
@@ -19,6 +19,23 @@
       "filename": "hello-vflow.json",
       "download_url": "https://raw.githubusercontent.com/ChaoMixian/vFlow-Repos/main/workflows/hello-vflow.json",
       "local_path": "workflows/hello-vflow.json"
+    },
+    {
+      "id": "ithome-signin",
+      "name": "IT签到之家",
+      "description": "IT之家一键签到",
+      "author": "ChaoMixian",
+      "version": "1.0.0",
+      "vFlowLevel": 1,
+      "homepage": "https://github.com/ChaoMixian",
+      "tags": [
+        "IT之家",
+        "签到"
+      ],
+      "updated_at": "2026-01-26",
+      "filename": "ithome-signin.json",
+      "download_url": "https://raw.githubusercontent.com/ChaoMixian/vFlow-Repos/main/workflows/ithome-signin.json",
+      "local_path": "workflows/ithome-signin.json"
     },
     {
       "id": "share-photo-ocr",
