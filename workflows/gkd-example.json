@@ -1,0 +1,77 @@
+{
+    "_meta": {
+        "id": "gkd-example",
+        "name": "GKD",
+        "version": "1.0.0",
+        "vFlowLevel": 1,
+        "description": "可作为 GKD 使用，自动执行点击操作。完全兼容 GKD 订阅规则",
+        "author": "ChaoMixian",
+        "homepage": "https://github.com/ChaoMixian",
+        "tags": [
+            "GKD",
+            "广告",
+            "AD"
+        ],
+        "updated_at": "2026-02-23"
+    },
+    "id": "299a6c45-c047-4870-ac5b-091492b0c0ef",
+    "isEnabled": false,
+    "isFavorite": false,
+    "name": "GKD",
+    "steps": [
+        {
+            "id": "c7db78bc-5cfc-4ae8-ab0e-7aff4bd5abc1",
+            "indentationLevel": 0,
+            "moduleId": "vflow.trigger.gkd",
+            "parameters": {
+                "subscriptionContent": "https://raw.githubusercontent.com/AIsouler/GKD_subscription/main/dist/AIsouler_gkd.json5",
+                "subscriptionFile": "",
+                "actionCd": 1000.0,
+                "actionDelay": 0.0,
+                "matchTime": 0.0,
+                "matchDelay": 0.0,
+                "__error_policy": "STOP",
+                "subscriptionUrl": "修改我"
+            }
+        },
+        {
+            "id": "e73f09a9-51eb-435b-a72c-3974e76b7c9c",
+            "indentationLevel": 0,
+            "moduleId": "vflow.data.comment",
+            "parameters": {
+                "content": "请点击上方触发器的「修改我」，填入适合的订阅链接，并且点击下载。不要忘记在工作流管理页面开启工作流喔~",
+                "__error_policy": "STOP"
+            }
+        },
+        {
+            "id": "184a034c-fcb7-41ed-8587-fda8faadde9f",
+            "indentationLevel": 0,
+            "moduleId": "vflow.device.click",
+            "parameters": {
+                "target": "{{c7db78bc-5cfc-4ae8-ab0e-7aff4bd5abc1.element}}",
+                "__error_policy": "STOP"
+            }
+        },
+        {
+            "id": "a3699d7c-3052-48eb-9a0b-e6b693e5cfd7",
+            "indentationLevel": 0,
+            "moduleId": "vflow.device.toast",
+            "parameters": {
+                "message": "已点击",
+                "__error_policy": "STOP"
+            }
+        }
+    ],
+    "triggerConfig": {
+        "subscriptionContent": "https://raw.githubusercontent.com/AIsouler/GKD_subscription/main/dist/AIsouler_gkd.json5",
+        "subscriptionFile": "",
+        "actionCd": 1000.0,
+        "actionDelay": 0.0,
+        "matchTime": 0.0,
+        "matchDelay": 0.0,
+        "__error_policy": "STOP",
+        "subscriptionUrl": "修改我",
+        "type": "vflow.trigger.gkd"
+    },
+    "wasEnabledBeforePermissionsLost": false
+}
