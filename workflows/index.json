@@ -1,8 +1,26 @@
 {
   "version": "1.0",
-  "last_updated": "2026-01-26T15:22:22.246100",
-  "total_count": 3,
+  "last_updated": "2026-02-03T14:07:55.394322",
+  "total_count": 4,
   "workflows": [
+    {
+      "id": "gkd-example",
+      "name": "GKD",
+      "description": "可作为 GKD 使用，自动执行点击操作。完全兼容 GKD 订阅规则",
+      "author": "ChaoMixian",
+      "version": "1.0.0",
+      "vFlowLevel": 1,
+      "homepage": "https://github.com/ChaoMixian",
+      "tags": [
+        "GKD",
+        "广告",
+        "AD"
+      ],
+      "updated_at": "2026-02-23",
+      "filename": "gkd-example.json",
+      "download_url": "https://raw.githubusercontent.com/ChaoMixian/vFlow-Repos/main/workflows/gkd-example.json",
+      "local_path": "workflows/gkd-example.json"
+    },
     {
       "id": "hello-vflow",
       "name": "Hello vFlow",
